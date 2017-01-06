@@ -28,20 +28,6 @@ const(SrcLine[]) sampleLineIndeces(string srcPath, ulong sampleSize)
     return rSampler.getValues();
 }
 
-bool containsIndex( const ulong[] indeces, ulong i )
-{
-    ulong k = 0; 
-    while (k < indeces.length)
-    {
-        if (indeces[k] == i) 
-        {
-            return true;
-        }
-        k++;
-    }
-    return false;
-}
-
 void writeIndeces(const SrcLine[] indeces, string srcPath, string outPath)
 {
     File srcFile = File(srcPath, "r"); 
