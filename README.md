@@ -6,8 +6,3 @@ When sampling 500 000 lines from 1.3 GB file shuf finished in 20 seconds, wherea
 On the other hand, with large samples writing to file is really slow because all lines in sample must be fetched by fseek on the source file. Writing 7 000 000 line (3 GB) sample to a file would have taken some 31 hours.
 
 If subset size is set to greater than or equal to the size of the file, a random permutation is produced.
-
-
-In reading the source file diskshuf will scan the file once to construct an array of line indeces that are to be included in the result. After this these lines are one by one read from the source file and written to output.
-
-Because this program is for the usecase where files and sample sizes are large, stdin and stdout are not supported.
