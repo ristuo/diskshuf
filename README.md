@@ -1,5 +1,7 @@
 #Diskshuf
 
-Reads random subset of lines from given file and prints them to output file with. At any given time the program will maintain one line in memory, which means that even very large files can be processed smoothly.
+Reads random subset of lines from given file and prints them to output file with. At any given time the program will maintain one line in memory, which means that even very large files can be processed smoothly. If subset size is set to greater than or equal to the size of the file, a random permutation is produced.
 
+In reading the source file diskshuf will scan the file once to construct an array of line indeces that are to be included in the result. After this these lines are one by one read from the source file and written to output.
 
+Because this program is for the usecase where files and sample sizes are large, stdin and stdout are not supported.
