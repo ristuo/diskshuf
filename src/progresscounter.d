@@ -79,4 +79,10 @@ class progressCounter(T)
             res ~= "]";
             return res;
         }
+
+        void printEnd(string endnote)
+        {
+            auto took = Clock.currTime() - this.startTime;
+            writeln(endnote ~ " Took " ~ text(took));
+        }
 }

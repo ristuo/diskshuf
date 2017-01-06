@@ -50,6 +50,7 @@ const(SrcLine[]) sampleLineIndeces( string srcPath
         }
     }
     srcFile.close();
+    progCounter.printEnd("Finished sampling.");
     return rSampler.getShuffledValues();
 }
 
@@ -63,8 +64,7 @@ void writeIndeces( const SrcLine[] indeces
     string line;
     ulong i = 0;
 
-    string intro = "Finished drawing sample";
-    intro ~= ", now writing to file: " ~ outPath ~ ".";
+    string intro = "Writing to file: " ~ outPath ~ ".";
     auto progCounter = new progressCounter!ulong(indeces.length, intro);
     bool firstReport = true;
 
@@ -85,6 +85,8 @@ void writeIndeces( const SrcLine[] indeces
         }
         i++;
     }
+    string msg = "Finished writing " ~ text(indeces.length) ~ " records.";
+    progCounter.printEnd(msg);
     srcFile.close();
     outFile.close();
 }
