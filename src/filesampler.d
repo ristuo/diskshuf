@@ -1,5 +1,6 @@
 import reservoir;
 import std.stdio;
+import progresscounter;
 import std.conv;
 import std.file;
 import core.stdc.stdlib;
@@ -22,16 +23,15 @@ const(SrcLine[]) sampleLineIndeces( string srcPath
 {
     File srcFile = File(srcPath, "r");
     ulong srcFileSize = srcFile.size();
+    string intro = "Drawing sample.";
+    auto progCounter = new progressCounter!ulong( srcFileSize
+                                                , intro);
     auto rSampler = new ReservoirSampler!SrcLine(sampleSize);
     ulong i = 0;
     long lineStart = 0;
     string line;
     SrcLine lineStruct;
-    SysTime startTime = Clock.currTime();
-    if (verbose)
-    {
-        writeln("");
-    }
+    bool firstReport = true;
     while (!srcFile.eof())
     {
         line = srcFile.readln();
@@ -41,52 +41,49 @@ const(SrcLine[]) sampleLineIndeces( string srcPath
         lineStart += cast(long)validLength(line);
         if (verbose && (i % 500000 == 0))
         {
-            SysTime now = Clock.currTime();
-            Duration took = now - startTime;
-            double fracDone= cast(double)lineStart/cast(double)srcFileSize;
-            int progressBarParts = 15;
-            long tookSec = took.total!"seconds";
-            long totalEstimateSecs = cast(long)(tookSec*(1/fracDone));
-            long leftSecs = totalEstimateSecs - tookSec;
-            Duration left = dur!"seconds"(leftSecs);
-            int pctDone = cast(int)(fracDone*100);
-            string log = "Constructing sample: ";
-            log ~= "[";
-            int j = 0;
-            while (j <= cast(int)(progressBarParts*fracDone))
+            if (firstReport)
             {
-                log ~= "=";
-                j++;
+                writeln("");
+                firstReport = false; 
             }
-            while (j < progressBarParts)
-            {
-                log ~= " ";
-                j++;
-            }
-            log ~= "] ";
-            log ~= text(lineStart/1000_000) ~ "MB processed. ";
-            log ~= text(pctDone) ~ "% done, " ~ text(left);
-            log ~= " left.";
-            write("\033[1A");
-            write("\033[K\r");
-            writeln("\r" ~ log);
+            progCounter.printProgressReport(lineStart);
         }
     }
     srcFile.close();
     return rSampler.getShuffledValues();
 }
 
-void writeIndeces( const SrcLine[] indeces, string srcPath, string outPath)
+void writeIndeces( const SrcLine[] indeces
+                 , string srcPath
+                 , string outPath
+                 , bool verbose )
 {
     File srcFile = File(srcPath, "r"); 
     File outFile = File(outPath, "w");
     string line;
+    ulong i = 0;
+
+    string intro = "Finished drawing sample";
+    intro ~= ", now writing to file: " ~ outPath ~ ".";
+    auto progCounter = new progressCounter!ulong(indeces.length, intro);
+    bool firstReport = true;
+
     foreach (srcLine; indeces)
     {
         srcFile.seek( srcLine.headPos );
         line = srcFile.readln();
         outFile.write(line);
         srcFile.rewind();
+        if (verbose && (i % 500 == 0))
+        {
+            if (firstReport)
+            {
+                writeln(""); 
+                firstReport = false;
+            }
+            progCounter.printProgressReport(i);
+        }
+        i++;
     }
     srcFile.close();
     outFile.close();
@@ -103,15 +100,8 @@ void sampleOnDisk( string srcPath
         exit(1);
     }
     const SrcLine[] indeces = sampleLineIndeces(srcPath, sampleSize, verbose);
+
     debug writeln("Writing " ~ text(indeces.length) ~ " lines:");
     debug writeln(indeces);
-    if (verbose)
-    {
-        string log = getTimestamp() ~ ": ";
-        log ~= "Finished constructing sample, now starting to write to"; 
-        log ~= " file: ";
-        log ~= outPath;
-        writeln(log); 
-    }
-    writeIndeces(indeces, srcPath, outPath);
+    writeIndeces(indeces, srcPath, outPath, verbose);
 }
