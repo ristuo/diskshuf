@@ -83,6 +83,10 @@ void writeIndeces( const SrcLine[] indeces
             }
             progCounter.printProgressReport(i);
         }
+        if (i % 1000 == 0)
+        {
+            outFile.flush();
+        }
         i++;
     }
     string msg = "Finished writing " ~ text(indeces.length) ~ " records.";
