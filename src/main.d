@@ -23,8 +23,8 @@ int main(string[] args)
     catch (ConvException)
     {
         string msg = "Samplesize was \"" ~ args[2];
-        msg ~= "\". It should be integer and in range (0, ";
-        msg ~= text(ulong.max) ~ ")";
+        msg ~= "\". It should be integer and in range [1, ";
+        msg ~= text(ulong.max) ~ "]";
         writeln(msg);
         return(1);
     }
