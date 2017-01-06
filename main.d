@@ -28,6 +28,9 @@ int main(string[] args)
         {
             outPath = stripExtension( baseName( srcPath ) ) ~ "_out.txt";
         }
+        debug writeln("srcPath: " ~ srcPath);
+        debug writeln("outPath: " ~ outPath);
+        debug writeln("lines: " ~ text(lines));
         sampleOnDisk(srcPath, outPath, lines);
     }
     catch(GetOptException)

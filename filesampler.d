@@ -11,7 +11,7 @@ struct SrcLine { long headPos;
 const(SrcLine[]) sampleLineIndeces(string srcPath, ulong sampleSize)
 {
     File srcFile = File(srcPath, "r");
-    auto rSampler = new reservoirSampler!SrcLine(sampleSize);
+    auto rSampler = new ReservoirSampler!SrcLine(sampleSize);
     ulong i = 0;
     long lineStart = 0;
     string line;
@@ -52,5 +52,7 @@ void sampleOnDisk(string srcPath, string outPath, ulong sampleSize)
         exit(1);
     }
     const SrcLine[] indeces = sampleLineIndeces(srcPath, sampleSize);
+    debug writeln("Writing " ~ text(indeces.length) ~ " lines:");
+    debug writeln(indeces);
     writeIndeces(indeces, srcPath, outPath);
 }
