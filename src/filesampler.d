@@ -73,7 +73,7 @@ const(SrcLine[]) sampleLineIndeces( string srcPath
         }
     }
     srcFile.close();
-    return rSampler.getValues();
+    return rSampler.getShuffledValues();
 }
 
 void writeIndeces( const SrcLine[] indeces, string srcPath, string outPath)

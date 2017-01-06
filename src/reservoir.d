@@ -65,6 +65,12 @@ class ReservoirSampler(T)
             return this.values;
         }
 
+        const(T[]) getShuffledValues()
+        {
+            randomShuffle(this.values);    
+            return this.values;
+        }
+
         override pure string toString()
         {
             return text(this.values);            
